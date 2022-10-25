@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-interface TokenPayload {
+interface ITokenPayload {
   email: string;
   iat: number;
   exp: number;
@@ -24,7 +24,7 @@ export const isAuthenticated = (
     const decodeToken = verify(
       token,
       process.env.SECRET as string,
-    ) as TokenPayload;
+    ) as ITokenPayload;
 
     req.user = { email: decodeToken.email };
 

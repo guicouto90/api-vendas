@@ -2,9 +2,12 @@ import { isAuthenticated } from './../../../shared/middlewares/isAuthenticated';
 import { UserController } from './../controllers/UserController';
 import { Router } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
+import multer from 'multer';
+import uploadConfig from '@config/upload';
 
 export const userRoute = Router();
 const controller = new UserController();
+const upload = multer(uploadConfig);
 
 userRoute.get('/', isAuthenticated, controller.list);
 
@@ -39,4 +42,11 @@ userRoute.post(
     },
   }),
   controller.login,
+);
+
+userRoute.patch(
+  '/avatar',
+  isAuthenticated,
+  upload.single('avatar'),
+  controller.uploadAvatar,
 );
