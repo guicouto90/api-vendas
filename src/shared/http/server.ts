@@ -31,4 +31,5 @@ app.use(
   },
 );
 
+// eslint-disable-next-line no-console
 app.listen(3000, () => console.log('listening to port 3000'));
