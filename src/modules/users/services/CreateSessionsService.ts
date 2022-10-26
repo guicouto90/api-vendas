@@ -26,7 +26,7 @@ export class CreateSessionsService {
     if (user?.password !== passwordHash || !user)
       throw new AppError('Email or password incorrect', 401);
 
-    const token = generateToken(data.email);
+    const token = generateToken(data.email, user.id);
 
     return { user, token };
   }

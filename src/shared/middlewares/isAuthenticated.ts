@@ -7,6 +7,7 @@ dotenv.config();
 
 interface ITokenPayload {
   email: string;
+  id: string;
   iat: number;
   exp: number;
 }
@@ -26,7 +27,7 @@ export const isAuthenticated = (
       process.env.SECRET as string,
     ) as ITokenPayload;
 
-    req.user = { email: decodeToken.email };
+    req.user = { email: decodeToken.email, id: decodeToken.id };
 
     return next();
   } catch (error) {

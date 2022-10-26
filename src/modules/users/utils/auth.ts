@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const generateToken = (email: string) => {
+export const generateToken = (email: string, id: string) => {
   const algorithm: Algorithm = 'HS256';
 
   const jwtConfig = {
@@ -12,6 +12,6 @@ export const generateToken = (email: string) => {
     algorithm,
   };
 
-  const token = sign({ email }, process.env.SECRET as string, jwtConfig);
+  const token = sign({ email, id }, process.env.SECRET as string, jwtConfig);
   return token;
 };

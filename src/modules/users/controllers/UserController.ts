@@ -4,6 +4,7 @@ import { ListUserService } from './../services/ListUsersService';
 import { ListUserByIdService } from './../services/ListUserByIdService';
 import { NextFunction, Request, Response } from 'express';
 import { CreateUserService } from '../services/CreateUserService';
+import { UpdateUserService } from '../services/UpdateUserService';
 
 export class UserController {
   async list(
@@ -38,6 +39,17 @@ export class UserController {
     const user = await service.execute(request.body);
 
     return response.status(201).json(user);
+  }
+
+  async updateUser(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<Response> {
+    const service = new UpdateUserService();
+    const user = await service.execute(request.user.id, request.body);
+
+    return response.status(200).json(user);
   }
 
   async login(
