@@ -25,9 +25,15 @@ app.use(
         message: error.message,
       });
     }
+    if (error.message) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
     return res.status(500).json({
       status: 'error',
-      message: 'Internal error',
+      message: 'Internal Error',
     });
   },
 );
