@@ -1,10 +1,15 @@
+import { IProduct } from '@modules/products/domain/model/IProduct';
 import { IOrderRepository } from './../domain/repository/IOrderRepository';
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-import { ICreateOrder } from '../domain/model/ICreateOrder';
 import { IOrder } from '../domain/model/IOrder';
 import { ICustomerRepository } from '@modules/customers/domain/repository/ICustomerRepository';
 import { IProductRepository } from '@modules/products/domain/repository/IProductRepository';
+
+interface IRequest {
+  customer_id: string;
+  products: IProduct[];
+}
 
 @injectable()
 export class CreateOrderService {
@@ -16,10 +21,8 @@ export class CreateOrderService {
     @inject('CustomersRepository')
     private curstomerRepository: ICustomerRepository,
   ) {}
-  async execute(data: ICreateOrder): Promise<IOrder> {
-    const customerExists = await this.curstomerRepository.findById(
-      data.customer.id,
-    );
+  async execute(data: IRequest): Promise<IOrder> {
+    const customerExists = await this.curstomerRepository.findById(data.customer_id);
 
     if (!customerExists) throw new AppError('Customer not found', 404);
 

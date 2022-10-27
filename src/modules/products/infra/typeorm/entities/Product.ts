@@ -1,5 +1,5 @@
+import { OrdersProducts } from '@modules/orders/infra/typeorm/entities/OrdersProducts';
 import { IProduct } from '@modules/products/domain/model/IProduct';
-import { OrdersProducts } from '@modules/orders/typeorm/entities/OrdersProducts';
 import {
   Column,
   CreateDateColumn,

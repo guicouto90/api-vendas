@@ -26,7 +26,7 @@ orderRoutes.post(
       products: Joi.array()
         .items(
           Joi.object({
-            product_id: Joi.string().uuid().required(),
+            id: Joi.string().uuid().required(),
             price: Joi.number().precision(2).strict().required(),
             quantity: Joi.number().strict().required(),
           }).required(),

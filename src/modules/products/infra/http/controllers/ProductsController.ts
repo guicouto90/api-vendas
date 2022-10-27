@@ -1,10 +1,10 @@
 import { ListProductByIdService } from './../../../services/ListProductByIdService';
 import { NextFunction, Request, Response } from 'express';
-import { CreateCustomerService } from '@modules/customers/services/CreateCustomerService';
-import { UpdateCustomerService } from './../../../../customers/services/UpdateCustomerService';
-import { DeleteCustomerService } from './../../../../customers/services/DeleteCustomerService';
 import { ListProductsService } from '@modules/products/services/ListProductsService';
 import { container } from 'tsyringe';
+import { CreateProductService } from '@modules/products/services/CreateProductService';
+import { DeleteProductService } from '@modules/products/services/DeleteProductService';
+import { UpdateProductService } from '@modules/products/services/UpdateProductService';
 
 export class ProductsController {
   async list(
@@ -34,7 +34,7 @@ export class ProductsController {
     response: Response,
     next: NextFunction,
   ): Promise<Response | undefined> {
-    const service = container.resolve(CreateCustomerService);
+    const service = container.resolve(CreateProductService);
     const products = await service.execute(request.body);
 
     return response.status(201).json(products);
@@ -45,7 +45,7 @@ export class ProductsController {
     response: Response,
     next: NextFunction,
   ): Promise<Response> {
-    const service = container.resolve(UpdateCustomerService);
+    const service = container.resolve(UpdateProductService);
     const product = await service.execute(request.params.id, request.body);
 
     return response.status(200).json(product);
@@ -56,7 +56,7 @@ export class ProductsController {
     response: Response,
     next: NextFunction,
   ): Promise<Response> {
-    const service = container.resolve(DeleteCustomerService);
+    const service = container.resolve(DeleteProductService);
     await service.execute(request.params.id);
 
     return response.status(204).json({});
