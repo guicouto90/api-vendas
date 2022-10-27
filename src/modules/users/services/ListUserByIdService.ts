@@ -1,15 +1,17 @@
 import { AppError } from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { User } from '../typeorm/entities/User';
-import { UsersRepository } from './../typeorm/repositories/UserRepository';
+import { inject, injectable } from 'tsyringe';
+import { IUser } from '../domain/model/IUser';
+import { IUserRepository } from '../domain/repository/IUserRepository';
 
+@injectable()
 export class ListUserByIdService {
-  async execute(id: string): Promise<User> {
-    const repository = getCustomRepository(UsersRepository);
-    const user = await repository.findOne({
-      where: { id },
-      select: ['id', 'email', 'name'],
-    });
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository,
+  ) {}
+
+  async execute(id: string): Promise<IUser> {
+    const user = await this.repository.findById(id);
     if (!user) throw new AppError('User not found');
     return user;
   }

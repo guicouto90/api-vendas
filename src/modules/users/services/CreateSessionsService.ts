@@ -1,9 +1,9 @@
 import { generateToken } from './../utils/auth';
 import { AppError } from './../../../shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { User } from '../typeorm/entities/User';
-import { UsersRepository } from '../typeorm/repositories/UserRepository';
 import { cryptograph } from '@shared/utils/password.hash';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repository/IUserRepository';
+import { IUser } from '../domain/model/IUser';
 
 interface IRequest {
   email: string;
@@ -11,15 +11,19 @@ interface IRequest {
 }
 
 interface IResponse {
-  user: User;
+  user: IUser;
   token: string;
 }
 
+@injectable()
 export class CreateSessionsService {
-  async execute(data: IRequest): Promise<IResponse> {
-    const repository = getCustomRepository(UsersRepository);
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository,
+  ) {}
 
-    const user = await repository.findByEmail(data.email);
+  async execute(data: IRequest): Promise<IResponse> {
+    const user = await this.repository.findByEmail(data.email);
 
     const passwordHash = cryptograph(data.password);
 

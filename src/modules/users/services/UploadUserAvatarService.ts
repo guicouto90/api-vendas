@@ -1,15 +1,19 @@
 import { AppError } from './../../../shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { User } from '../typeorm/entities/User';
-import { UsersRepository } from '../typeorm/repositories/UserRepository';
 import { join } from 'path';
 import { promises } from 'fs';
 import uploadConfig from '@config/upload';
+import { IUserRepository } from '../domain/repository/IUserRepository';
+import { inject, injectable } from 'tsyringe';
+import { IUser } from '../domain/model/IUser';
 
+@injectable()
 export class UpdateUserAvatarService {
-  async execute(email: string, avatarFileName: string): Promise<User> {
-    const repository = getCustomRepository(UsersRepository);
-    const user = await repository.findByEmail(email);
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository,
+  ) {}
+  async execute(email: string, avatarFileName: string): Promise<IUser> {
+    const user = await this.repository.findByEmail(email);
     if (!user) throw new AppError('User not found', 404);
 
     if (user.avatar) {
@@ -20,7 +24,7 @@ export class UpdateUserAvatarService {
 
     user.avatar = avatarFileName;
 
-    repository.save(user);
+    await this.repository.save(user);
 
     return user;
   }

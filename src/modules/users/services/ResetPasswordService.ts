@@ -1,22 +1,24 @@
-import { UserTokensRepository } from './../typeorm/repositories/UserTokenRepository';
 import { AppError } from './../../../shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { UsersRepository } from '../typeorm/repositories/UserRepository';
 import { addHours, isAfter } from 'date-fns';
 import { cryptograph } from '@shared/utils/password.hash';
+import { IUserTokenRepository } from '../domain/repository/IUserTokenRepository';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repository/IUserRepository';
 
+@injectable()
 export class ResetPasswordService {
+  constructor(
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
+    @inject('UserTokenRepository')
+    private tokenRepository: IUserTokenRepository,
+  ) {}
   async execute(token: string, password: string): Promise<void> {
-    const tokenRepository = getCustomRepository(UserTokensRepository);
-    const userRepository = getCustomRepository(UsersRepository);
-
-    const userToken = await tokenRepository.findByToken(token);
+    const userToken = await this.tokenRepository.findByToken(token);
 
     if (!userToken) throw new AppError('User Token not found', 404);
 
-    const user = await userRepository.findOne({
-      where: { id: userToken.user_id },
-    });
+    const user = await this.userRepository.findById(userToken.user_id);
     if (!user) throw new AppError('User not found', 404);
 
     const compareDate = addHours(userToken.created_at, 2);
@@ -26,6 +28,6 @@ export class ResetPasswordService {
 
     user.password = cryptograph(password);
 
-    await userRepository.save(user);
+    await this.userRepository.save(user);
   }
 }

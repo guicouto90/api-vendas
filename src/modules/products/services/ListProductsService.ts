@@ -1,11 +1,15 @@
-import { ProductsRepository } from './../typeorm/repositories/ProductsRepository';
-import { getCustomRepository } from 'typeorm';
-import { Product } from '../typeorm/entities/Product';
+import { IProduct } from '../domain/model/IProduct';
+import { IProductRepository } from '../domain/repository/IProductRepository';
+import { inject, injectable } from 'tsyringe';
 
+@injectable()
 export class ListProductsService {
-  async execute(): Promise<Product[]> {
-    const productsRepository = getCustomRepository(ProductsRepository);
-    const products = await productsRepository.find();
+  constructor(
+    @inject('ProductsRepository')
+    private repository: IProductRepository,
+  ) {}
+  async execute(): Promise<IProduct[]> {
+    const products = await this.repository.find();
     return products;
   }
 }

@@ -1,8 +1,8 @@
+import { IUserRepository } from './../domain/repository/IUserRepository';
 import { AppError } from './../../../shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { User } from '../typeorm/entities/User';
-import { UsersRepository } from '../typeorm/repositories/UserRepository';
 import { cryptograph } from '@shared/utils/password.hash';
+import { inject, injectable } from 'tsyringe';
+import { IUser } from '../domain/model/IUser';
 
 interface IRequest {
   name: string;
@@ -10,18 +10,23 @@ interface IRequest {
   password: string;
 }
 
+@injectable()
 export class CreateUserService {
-  async execute(data: IRequest): Promise<User> {
-    const repository = getCustomRepository(UsersRepository);
-    const userExists = await repository.findByEmail(data.email);
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository,
+  ) {}
+  async execute(data: IRequest): Promise<IUser> {
+    const userExists = await this.repository.findByEmail(data.email);
     if (userExists) throw new AppError('User already exist');
     const passwordHash = cryptograph(data.password);
-    const user = repository.create({
+
+    const user = await this.repository.create({
       name: data.name,
       email: data.email,
       password: passwordHash,
     });
-    await repository.save(user);
+    await this.repository.save(user);
 
     return user;
   }

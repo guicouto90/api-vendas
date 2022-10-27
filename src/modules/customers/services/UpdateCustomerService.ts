@@ -1,18 +1,20 @@
+import { ICreateCustomer } from './../domain/models/ICreateCustomer';
 import { AppError } from './../../../shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
-import { Customer } from '../typeorm/entities/Customer';
-import { CustomersRepository } from '../typeorm/repositories/CustomerRepository';
-import { cryptograph } from '@shared/utils/password.hash';
+import { Customer } from '../infra/typeorm/entities/Customer';
+import { CustomersRepository } from '../infra/typeorm/repositories/CustomerRepository';
+import { inject, injectable } from 'tsyringe';
+import { ICustomerRepository } from '../domain/repository/ICustomerRepository';
 
-interface IRequest {
-  name: string;
-  email: string;
-}
-
+@injectable()
 export class UpdateCustomerService {
-  async execute(id: string, data: IRequest): Promise<Customer> {
+  constructor(
+    @inject('CustomerRepository')
+    private repository: ICustomerRepository,
+  ) {}
+  async execute(id: string, data: ICreateCustomer): Promise<Customer> {
     const repository = getCustomRepository(CustomersRepository);
-    const customer = await repository.findOne({ where: { id } });
+    const customer = await this.repository.findById(id);
 
     if (!customer) throw new AppError('customer not found', 404);
 
@@ -24,7 +26,7 @@ export class UpdateCustomerService {
     customer.name = data.name;
     customer.email = data.email;
 
-    repository.save(customer);
+    await this.repository.save(customer);
 
     return customer;
   }

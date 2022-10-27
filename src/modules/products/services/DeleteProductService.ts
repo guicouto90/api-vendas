@@ -1,14 +1,17 @@
 import { AppError } from '../../../shared/errors/AppError';
-import { ProductsRepository } from '../typeorm/repositories/ProductsRepository';
-import { getCustomRepository } from 'typeorm';
+import { inject, injectable } from 'tsyringe';
+import { IProductRepository } from '../domain/repository/IProductRepository';
 
+@injectable()
 export class DeleteProductService {
+  constructor(
+    @inject('ProductsRepository')
+    private repository: IProductRepository,
+  ) {}
   async execute(id: string): Promise<void> {
-    const productsRepository = getCustomRepository(ProductsRepository);
-
-    const product = await productsRepository.findOne(id);
+    const product = await this.repository.findById(id);
     if (!product) throw new AppError('Product not found');
 
-    await productsRepository.remove(product);
+    await this.repository.remove(product);
   }
 }
