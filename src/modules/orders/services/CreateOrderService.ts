@@ -22,7 +22,9 @@ export class CreateOrderService {
     private curstomerRepository: ICustomerRepository,
   ) {}
   async execute(data: IRequest): Promise<IOrder> {
-    const customerExists = await this.curstomerRepository.findById(data.customer_id);
+    const customerExists = await this.curstomerRepository.findById(
+      data.customer_id,
+    );
 
     if (!customerExists) throw new AppError('Customer not found', 404);
 

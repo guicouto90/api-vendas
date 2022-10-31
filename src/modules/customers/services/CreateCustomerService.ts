@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ICreateCustomer } from './../domain/models/ICreateCustomer';
 import { ICustomer } from '@modules/customers/domain/models/ICustomer';
 import { ICustomerRepository } from './../domain/repository/ICustomerRepository';

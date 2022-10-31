@@ -2,13 +2,14 @@ import { ICreateOrder } from './../../../domain/model/ICreateOrder';
 import { IOrderRepository } from './../../../domain/repository/IOrderRepository';
 import { Order } from '../entities/Order';
 import { Repository, getRepository } from 'typeorm';
+import { dataSource } from '@shared/infra/typeorm';
 
 export class OrderRepository implements IOrderRepository {
   private ormRepository: Repository<Order>;
   constructor() {
-    this.ormRepository = getRepository(Order);
+    this.ormRepository = dataSource.getRepository(Order);
   }
-  async findById(id: string): Promise<undefined | Order> {
+  async findById(id: string): Promise<null | Order> {
     return this.ormRepository.findOne({
       where: { id },
       relations: ['orders_products', 'customer'],

@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node -r tsconfig-paths/register --transpile-only src/shared/infra/http/server.ts",
+    "test": "jest",
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:run": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -- -d src/shared/infra/typeorm/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.14",
+    "@types/jest": "^29.2.0",
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/multer": "^1.4.7",
@@ -26,13 +29,18 @@
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.2.0",
+    "jest": "^29.2.2",
+    "jest-mock-extended": "^3.0.1",
     "prettier": "^2.7.1",
+    "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.6.2",
+    "better-sqlite3": "^7.6.2",
     "celebrate": "^15.0.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -49,6 +57,7 @@
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0",
-    "typeorm": "^0.2.45"
+    "typeorm": "^0.3.10",
+    "uuid": "^9.0.0"
   }
 }

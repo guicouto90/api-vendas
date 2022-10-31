@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-vendas
+  labels:
+    app: api-vendas
+spec:
+  containers:
+    - name: api-vendas-container
+      image: ./
+      ports:
+        - containerPort: 90

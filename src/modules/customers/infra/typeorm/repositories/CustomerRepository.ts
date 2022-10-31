@@ -1,25 +1,22 @@
 import { ICustomerRepository } from './../../../domain/repository/ICustomerRepository';
 import { Customer } from '../entities/Customer';
-import { getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ICustomer } from '@modules/customers/domain/models/ICustomer';
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
+import { dataSource } from '@shared/infra/typeorm';
 
 export class CustomersRepository implements ICustomerRepository {
   private ormRepository: Repository<Customer>;
 
   constructor() {
-    this.ormRepository = getRepository(Customer);
+    this.ormRepository = dataSource.getRepository(Customer);
   }
 
-  findById(id: string): Promise<ICustomer | undefined> {
-    return this.ormRepository.findOne({
-      where: { id },
-    });
+  async findById(id: string): Promise<ICustomer | null> {
+    return this.ormRepository.findOneBy({ id });
   }
-  async findByEmail(email: string): Promise<undefined | ICustomer> {
-    return this.ormRepository.findOne({
-      where: { email },
-    });
+  async findByEmail(email: string): Promise<null | ICustomer> {
+    return this.ormRepository.findOneBy({ email });
   }
 
   async create(data: ICreateCustomer): Promise<ICustomer> {

@@ -1,18 +1,17 @@
 import { IUserTokenRepository } from './../../../domain/repository/IUserTokenRepository';
-import { getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserTokens } from '../entities/UserTokens';
 import { IUserToken } from '@modules/users/domain/model/IUserToken';
+import { dataSource } from '@shared/infra/typeorm';
 
 export class UserTokensRepository implements IUserTokenRepository {
   private ormRepository: Repository<UserTokens>;
 
   constructor() {
-    this.ormRepository = getRepository(UserTokens);
+    this.ormRepository = dataSource.getRepository(UserTokens);
   }
-  async findByToken(token: string): Promise<undefined | IUserToken> {
-    return this.ormRepository.findOne({
-      where: { token },
-    });
+  async findByToken(token: string): Promise<null | IUserToken> {
+    return this.ormRepository.findOneBy({ token });
   }
 
   async generateToken(userId: string): Promise<IUserToken> {
